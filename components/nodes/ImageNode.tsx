@@ -53,7 +53,7 @@ export default function ImageNode({ id, data, selected }: NodeProps) {
           </div>
         )}
       </div>
-      <Handle type="source" position={Position.Right} className="!bg-[#22c55e]" />
+      <Handle type="source" id="out:image" position={Position.Right} className="typed-handle typed-handle--image" />
     </div>
   );
 }

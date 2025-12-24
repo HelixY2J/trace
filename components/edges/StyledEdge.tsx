@@ -7,13 +7,22 @@ import { BaseEdge, getBezierPath, type EdgeProps, useReactFlow } from "@xyflow/r
  * Solid smooth bezier for clarity.
  */
 export default function StyledEdge(props: EdgeProps) {
-  const { id, source, sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition } = props;
+  const { id, source, target, sourceHandle, targetHandle, sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition } = props;
   const rf = useReactFlow();
   const sourceNode = source ? rf.getNode(source) : undefined;
+  const targetNode = target ? rf.getNode(target) : undefined;
   const sourceType = sourceNode?.type;
+  const targetType = targetNode?.type;
 
-  const color =
+  const baseColor =
     sourceType === "text" ? "#d946ef" : sourceType === "image" || sourceType === "llm" ? "#22c55e" : "#94a3b8";
+  const byHandles =
+    (sourceHandle === "out:text" && targetHandle === "in:text") ? "#d946ef" :
+    (sourceHandle === "out:image" && targetHandle === "in:image") ? "#22c55e" :
+    undefined;
+  const byTypes =
+    sourceType === "llm" && targetType === "text" ? "#d946ef" : undefined;
+  const color = byHandles ?? byTypes ?? baseColor;
 
   const [path] = getBezierPath({
     sourceX,
