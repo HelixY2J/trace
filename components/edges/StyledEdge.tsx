@@ -24,7 +24,9 @@ export default function StyledEdge(props: EdgeProps) {
     (sourceHandle === "out:image" && targetHandle === "in:image") ? "#22c55e" :
     undefined;
   const byTypes =
-    sourceType === "llm" && targetType === "text" ? "#d946ef" : undefined;
+    (sourceType === "llm" && targetType === "text") || (sourceType === "llmPrompt" && targetType === "text")
+      ? "#d946ef"
+      : undefined;
   const color = byHandles ?? byTypes ?? baseColor;
 
   const [path] = getBezierPath({

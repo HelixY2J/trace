@@ -1,5 +1,5 @@
 type SidebarProps = {
-  onAdd: (kind: "text" | "image" | "llm") => void;
+  onAdd: (kind: "text" | "image" | "llm" | "llmPrompt") => void;
 };
 
 /**
