@@ -1,10 +1,10 @@
 export const DEFAULT_WORKFLOW = {
-    "nodes": [
+  "nodes": [
     {
       "id": "11",
       "position": {
-        "x": 321,
-        "y": 238
+        "x": 221.87732979831077,
+        "y": 142.21854340061486
       },
       "type": "text",
       "data": {
@@ -14,13 +14,14 @@ export const DEFAULT_WORKFLOW = {
       "measured": {
         "width": 260,
         "height": 162
-      }
+      },
+      "dragging": false
     },
     {
       "id": "17",
       "position": {
-        "x": 284,
-        "y": 520
+        "x": 212.72077648417854,
+        "y": 484.36038824208924
       },
       "type": "image",
       "data": {
@@ -29,31 +30,15 @@ export const DEFAULT_WORKFLOW = {
       },
       "measured": {
         "width": 260,
-        "height": 320
-      }
+        "height": 346
+      },
+      "dragging": false
     },
     {
-      "id": "18",
+      "id": "25",
       "position": {
-        "x": 675,
-        "y": 299
-      },
-      "type": "llm",
-      "data": {
-        "kind": "LLM",
-        "model": "Imagen 4",
-        "prompt": "Analyze the Given product"
-      },
-      "measured": {
-        "width": 320,
-        "height": 494
-      }
-    },
-    {
-      "id": "19",
-      "position": {
-        "x": 1100,
-        "y": 520
+        "x": 2110.8769830422884,
+        "y": 435.5014706139934
       },
       "type": "text",
       "data": {
@@ -61,15 +46,87 @@ export const DEFAULT_WORKFLOW = {
         "text": ""
       },
       "measured": {
-        "width": 260,
-        "height": 162
-      }
+        "width": 360,
+        "height": 246
+      },
+      "dragging": false
     },
     {
-      "id": "20",
+      "id": "33",
       "position": {
-        "x": 1502.7047454052783,
-        "y": 829.6950081252621
+        "x": 557.3293432734398,
+        "y": 224.1888289535962
+      },
+      "type": "llm",
+      "data": {
+        "kind": "LLM",
+        "model": "Imagen 4",
+        "prompt": "analyze the product "
+      },
+      "measured": {
+        "width": 320,
+        "height": 494
+      },
+      "dragging": false
+    },
+    {
+      "id": "35",
+      "position": {
+        "x": 907.7820445629421,
+        "y": 236.23256759784726
+      },
+      "type": "text",
+      "data": {
+        "kind": "Text",
+        "text": ""
+      },
+      "measured": {
+        "width": 360,
+        "height": 1146
+      },
+      "dragging": false
+    },
+    {
+      "id": "36",
+      "position": {
+        "x": 1788.0395784393759,
+        "y": 280.7234316540591
+      },
+      "type": "llm",
+      "data": {
+        "kind": "LLM",
+        "model": "Imagen 4",
+        "prompt": "write SEO meta description"
+      },
+      "measured": {
+        "width": 320,
+        "height": 494
+      },
+      "dragging": false
+    },
+    {
+      "id": "37",
+      "position": {
+        "x": 1308.8683712945178,
+        "y": -134.95657647111608
+      },
+      "type": "llm",
+      "data": {
+        "kind": "LLM",
+        "model": "Imagen 4",
+        "prompt": "write amazon lisiting "
+      },
+      "measured": {
+        "width": 320,
+        "height": 494
+      },
+      "dragging": false
+    },
+    {
+      "id": "38",
+      "position": {
+        "x": 1370.8753463912176,
+        "y": 835.1188042035942
       },
       "type": "llm",
       "data": {
@@ -80,64 +137,14 @@ export const DEFAULT_WORKFLOW = {
       "measured": {
         "width": 320,
         "height": 494
-      }
-    },
-    {
-      "id": "21",
-      "position": {
-        "x": 1900.3376935577328,
-        "y": 624.6656498354491
-      },
-      "type": "llm",
-      "data": {
-        "kind": "LLM",
-        "model": "Imagen 4",
-        "prompt": "Write SEO meta description"
-      },
-      "measured": {
-        "width": 320,
-        "height": 494
-      }
-    },
-    {
-      "id": "22",
-      "position": {
-        "x": 1498,
-        "y": 153.5
-      },
-      "type": "llm",
-      "data": {
-        "kind": "LLM",
-        "model": "Imagen 4",
-        "prompt": "write amazon listing"
-      },
-      "measured": {
-        "width": 320,
-        "height": 494
-      }
-    },
-    {
-      "id": "23",
-      "position": {
-        "x": 1910.825549912271,
-        "y": 265.2066210610435
-      },
-      "type": "text",
-      "data": {
-        "kind": "Text",
-        "text": ""
-      },
-      "measured": {
-        "width": 260,
-        "height": 162
       },
       "dragging": false
     },
     {
-      "id": "24",
+      "id": "39",
       "position": {
-        "x": 1949.961351503439,
-        "y": 1276.4303894893949
+        "x": 1731.9896250105726,
+        "y": -7.737411098125687
       },
       "type": "text",
       "data": {
@@ -145,15 +152,16 @@ export const DEFAULT_WORKFLOW = {
         "text": ""
       },
       "measured": {
-        "width": 260,
-        "height": 162
-      }
+        "width": 360,
+        "height": 1074
+      },
+      "dragging": false
     },
     {
-      "id": "25",
+      "id": "40",
       "position": {
-        "x": 2272.4981024193357,
-        "y": 779.105425195117
+        "x": 1715.4457309011107,
+        "y": 866.5437622249556
       },
       "type": "text",
       "data": {
@@ -161,56 +169,84 @@ export const DEFAULT_WORKFLOW = {
         "text": ""
       },
       "measured": {
-        "width": 260,
-        "height": 162
-      }
+        "width": 360,
+        "height": 246
+      },
+      "dragging": false
     }
   ],
   "edges": [
     {
-      "id": "xy-edge__18-19",
-      "source": "18",
-      "target": "19"
-    },
-    {
-      "id": "xy-edge__11-18",
+      "type": "styled",
       "source": "11",
-      "target": "18"
+      "sourceHandle": "out:text",
+      "target": "33",
+      "targetHandle": "in:text",
+      "id": "xy-edge__11out:text-33in:text"
     },
     {
-      "id": "xy-edge__17-18",
+      "type": "styled",
       "source": "17",
-      "target": "18"
+      "sourceHandle": "out:image",
+      "target": "33",
+      "targetHandle": "in:image",
+      "id": "xy-edge__17out:image-33in:image"
     },
     {
-      "id": "xy-edge__19-22",
-      "source": "19",
-      "target": "22"
+      "type": "styled",
+      "source": "33",
+      "sourceHandle": "out:text",
+      "target": "35",
+      "targetHandle": "in:text",
+      "id": "xy-edge__33out:text-35in:text"
     },
     {
-      "id": "xy-edge__19-20",
-      "source": "19",
-      "target": "20"
+      "type": "styled",
+      "source": "35",
+      "sourceHandle": "out:text",
+      "target": "37",
+      "targetHandle": "in:text",
+      "id": "xy-edge__35out:text-37in:text"
     },
     {
-      "id": "xy-edge__19-21",
-      "source": "19",
-      "target": "21"
+      "type": "styled",
+      "source": "35",
+      "sourceHandle": "out:text",
+      "target": "38",
+      "targetHandle": "in:text",
+      "id": "xy-edge__35out:text-38in:text"
     },
     {
-      "id": "xy-edge__22-23",
-      "source": "22",
-      "target": "23"
+      "type": "styled",
+      "source": "35",
+      "sourceHandle": "out:text",
+      "target": "36",
+      "targetHandle": "in:text",
+      "id": "xy-edge__35out:text-36in:text"
     },
     {
-      "id": "xy-edge__20-24",
-      "source": "20",
-      "target": "24"
+      "type": "styled",
+      "source": "37",
+      "sourceHandle": "out:text",
+      "target": "39",
+      "targetHandle": "in:text",
+      "id": "xy-edge__37out:text-39in:text"
     },
     {
-      "id": "xy-edge__21-25",
-      "source": "21",
-      "target": "25"
+      "type": "styled",
+      "source": "36",
+      "sourceHandle": "out:text",
+      "target": "25",
+      "targetHandle": "in:text",
+      "id": "xy-edge__36out:text-25in:text"
+    },
+    {
+      "type": "styled",
+      "source": "38",
+      "sourceHandle": "out:text",
+      "target": "40",
+      "targetHandle": "in:text",
+      "id": "xy-edge__38out:text-40in:text"
     }
   ]
   };

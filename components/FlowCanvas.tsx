@@ -60,10 +60,25 @@ function FlowCanvasInner(_props: unknown, ref: React.Ref<FlowCanvasHandle>) {
     });
     const edges: Edge[] = (DEFAULT_WORKFLOW?.edges ?? []).map((e: any) => {
       const { selected, ...rest } = e || {};
+      const sourceId = String(rest.source);
+      const targetId = String(rest.target);
+      const s = (DEFAULT_WORKFLOW?.nodes ?? []).find((n: any) => String(n?.id) === sourceId);
+      const t = (DEFAULT_WORKFLOW?.nodes ?? []).find((n: any) => String(n?.id) === targetId);
+      const sourceType = s?.type;
+      const targetType = t?.type;
+      const allowedByTypeFallback =
+        !!sourceType && !!targetType &&
+        (
+          (sourceType === "text" && targetType === "llm") ||
+          (sourceType === "image" && targetType === "llm") ||
+          (sourceType === "llm" && targetType === "text")
+        );
+      const data = allowedByTypeFallback ? undefined : { invalid: true };
       return {
-        id: String(rest.id ?? `${rest.source}-${rest.target}`),
-        source: String(rest.source),
-        target: String(rest.target),
+        id: String(rest.id ?? `${sourceId}-${targetId}`),
+        source: sourceId,
+        target: targetId,
+        data,
       } as Edge;
     });
     return { nodes, edges };
@@ -100,7 +115,26 @@ function FlowCanvasInner(_props: unknown, ref: React.Ref<FlowCanvasHandle>) {
   }, []);
 
   const onConnect = (connection: Connection) => {
-    setEdges((prev) => addEdge({ ...connection, type: "styled" }, prev));
+    const s = connection.source ? rf.getNode(connection.source) : undefined;
+    const t = connection.target ? rf.getNode(connection.target) : undefined;
+    const sourceType = s?.type;
+    const targetType = t?.type;
+    const sh = connection.sourceHandle || "";
+    const th = connection.targetHandle || "";
+    const handleAllowed =
+      (sh === "out:text" && th === "in:text" && (sourceType === "text" || sourceType === "llm") && (targetType === "llm" || targetType === "text")) ||
+      (sh === "out:image" && th === "in:image" && sourceType === "image" && targetType === "llm") ||
+      false;
+    const allowedByTypeFallback =
+      !!sourceType && !!targetType &&
+      (
+        (sourceType === "text" && targetType === "llm") ||
+        (sourceType === "image" && targetType === "llm") ||
+        (sourceType === "llm" && targetType === "text")
+      );
+    const isAllowed = sh || th ? handleAllowed : allowedByTypeFallback;
+    const data = isAllowed ? undefined : { invalid: true };
+    setEdges((prev) => addEdge({ ...connection, type: "styled", data }, prev));
   };
 
   // Wrap node/edge changes to capture history
@@ -370,10 +404,34 @@ function FlowCanvasInner(_props: unknown, ref: React.Ref<FlowCanvasHandle>) {
       });
       const nextEdges: Edge[] = wf.edges.map((e: any) => {
         const { ...rest } = e || {};
+        const sourceId = String(rest.source);
+        const targetId = String(rest.target);
+        const s = nextNodes.find((n) => n.id === sourceId);
+        const t = nextNodes.find((n) => n.id === targetId);
+        const sourceType = s?.type;
+        const targetType = t?.type;
+        const sh = String(rest.sourceHandle ?? "");
+        const th = String(rest.targetHandle ?? "");
+        const handleAllowed =
+          (sh === "out:text" && th === "in:text" && (sourceType === "text" || sourceType === "llm") && (targetType === "llm" || targetType === "text")) ||
+          (sh === "out:image" && th === "in:image" && sourceType === "image" && targetType === "llm") ||
+          false;
+        const allowedByTypeFallback =
+          !!sourceType && !!targetType &&
+          (
+            (sourceType === "text" && targetType === "llm") ||
+            (sourceType === "image" && targetType === "llm") ||
+            (sourceType === "llm" && targetType === "text")
+          );
+        const isAllowed = sh || th ? handleAllowed : allowedByTypeFallback;
+        const data = isAllowed ? undefined : { invalid: true };
         return {
-          id: String(rest.id ?? `${rest.source}-${rest.target}`),
-          source: String(rest.source),
-          target: String(rest.target),
+          id: String(rest.id ?? `${sourceId}-${targetId}`),
+          source: sourceId,
+          target: targetId,
+          sourceHandle: sh || undefined,
+          targetHandle: th || undefined,
+          data,
         } as Edge;
       });
 

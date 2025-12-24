@@ -183,3 +183,44 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* Typed handle styling with inner dot and larger hit area */
+.react-flow__handle.typed-handle {
+  width: 20px !important;
+  height: 20px !important;
+  background: transparent !important;
+  border: 1px solid rgba(148, 163, 184, 0.35) !important;
+  border-radius: 9999px !important;
+  box-shadow: 0 0 0 4px rgba(148, 163, 184, 0.06);
+  position: absolute;
+  z-index: 2;
+}
+.react-flow__handle.typed-handle::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background-color: #94a3b8;
+  display: block;
+  z-index: 3;
+}
+.react-flow__handle.typed-handle.typed-handle--text::after {
+  background-color: #d946ef;
+}
+.react-flow__handle.typed-handle.typed-handle--image::after {
+  background-color: #22c55e;
+}
+.react-flow__handle.typed-handle.typed-handle--llm::after {
+  background-color: #22c55e;
+}
+.react-flow__handle.typed-handle.typed-handle--invalid {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.12);
+}
+.react-flow__handle.typed-handle.typed-handle--invalid::after {
+  background-color: #ef4444 !important;
+}

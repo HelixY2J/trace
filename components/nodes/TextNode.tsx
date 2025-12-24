@@ -1,4 +1,4 @@
-import { Handle, Position, type NodeProps, useReactFlow } from "@xyflow/react";
+import { Handle, Position, type NodeProps, useReactFlow, useStore } from "@xyflow/react";
 
 export type TextNodeData = {
   kind?: "Text";
@@ -20,6 +20,18 @@ export default function TextNode({ id, data, selected }: NodeProps) {
     );
   };
 
+  const edges = useStore((s) => s.edges);
+  const invalidTextIn = edges.some((e) => {
+    if (e.target !== id) return false;
+    const th = (e as any).targetHandle || "";
+    if (th !== "in:text") return false;
+    const s = e.source ? rf.getNode(e.source) : undefined;
+    const sh = (e as any).sourceHandle || "";
+    return !(s?.type === "llm" && sh === "out:text");
+  });
+  const targetClass = `typed-handle typed-handle--text${invalidTextIn ? " typed-handle--invalid" : ""}`;
+  const targetTitle = invalidTextIn ? "Wrong input type" : undefined;
+
   return (
     <div className={`relative min-w-[260px] max-w-[360px] rounded-md border bg-[#212126] text-zinc-100 shadow-sm ${selected ? "border-pink-400 ring-1 ring-pink-400/40" : "border-zinc-700"}`}>
       <div className="px-3 pt-2 text-xs font-medium tracking-wide text-zinc-300">
@@ -39,9 +51,8 @@ export default function TextNode({ id, data, selected }: NodeProps) {
           {d.fromLLMText}
         </div>
       )}
-      {/* Left target (to receive from LLM), Right source (to forward downstream) */}
-      <Handle type="target" position={Position.Left} className="!bg-[#22c55e]" />
-      <Handle type="source" position={Position.Right} className="!bg-[#22c55e]" />
+      <Handle type="target" id="in:text" position={Position.Left} className={targetClass} title={targetTitle} />
+      <Handle type="source" id="out:text" position={Position.Right} className="typed-handle typed-handle--text" />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { Handle, Position, type NodeProps, useReactFlow } from "@xyflow/react";
+import { Handle, Position, type NodeProps, useReactFlow, useStore } from "@xyflow/react";
 
 export type LLMNodeData = {
   kind?: "LLM";
@@ -23,6 +23,29 @@ export default function LLMNode({ id, data, selected }: NodeProps) {
       prev.map((n) => (n.id === id ? { ...n, data: { ...(n.data || {}), ...partial } } : n)),
     );
   };
+
+  const edges = useStore((s) => s.edges);
+  const invalidTextIn = edges.some((e) => {
+    if (e.target !== id) return false;
+    const th = (e as any).targetHandle || "";
+    if (th !== "in:text") return false;
+    const s = e.source ? rf.getNode(e.source) : undefined;
+    const sh = (e as any).sourceHandle || "";
+    return !(s?.type === "text" && sh === "out:text");
+  });
+  const invalidImageIn = edges.some((e) => {
+    if (e.target !== id) return false;
+    const th = (e as any).targetHandle || "";
+    if (th !== "in:image") return false;
+    const s = e.source ? rf.getNode(e.source) : undefined;
+    const sh = (e as any).sourceHandle || "";
+    return !(s?.type === "image" && sh === "out:image");
+  });
+  const textInClass = `typed-handle typed-handle--text${invalidTextIn ? " typed-handle--invalid" : ""}`;
+  const imageInClass = `typed-handle typed-handle--image${invalidImageIn ? " typed-handle--invalid" : ""}`;
+  const textInTitle = invalidTextIn ? "Wrong input type" : undefined;
+  const imageInTitle = invalidImageIn ? "Wrong input type" : undefined;
+  const hasInvalidInputs = invalidTextIn || invalidImageIn;
 
   /**
    * Traverse upstream nodes and collect inputs from Text/Image/LLM nodes.
@@ -208,15 +231,16 @@ export default function LLMNode({ id, data, selected }: NodeProps) {
         <button
           type="button"
           className="rounded-md border border-zinc-700 bg-[#2a2a2f] px-3 py-1.5 text-xs font-medium text-[#e8edf0] hover:bg-[#26262b] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F7FFA8]/30 disabled:opacity-50"
-          disabled={!!d.loading}
+          disabled={!!d.loading || hasInvalidInputs}
           onClick={runModel}
         >
           {d.loading ? "Running..." : "Run Model"}
         </button>
       </div>
 
-      <Handle type="target" position={Position.Left} className="!bg-[#22c55e]" />
-      <Handle type="source" position={Position.Right} className="!bg-[#22c55e]" />
+      <Handle type="target" id="in:text" position={Position.Left} className={textInClass} title={textInTitle} style={{ top: 96 }} />
+      <Handle type="target" id="in:image" position={Position.Left} className={imageInClass} title={imageInTitle} style={{ top: 144 }} />
+      <Handle type="source" id="out:text" position={Position.Right} className="typed-handle typed-handle--text" />
     </div>
   );
 }
