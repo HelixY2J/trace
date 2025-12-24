@@ -27,7 +27,7 @@ export default function TextNode({ id, data, selected }: NodeProps) {
     if (th !== "in:text") return false;
     const s = e.source ? rf.getNode(e.source) : undefined;
     const sh = (e as any).sourceHandle || "";
-    return !(s?.type === "llm" && sh === "out:text");
+    return !(((s?.type === "llm" || s?.type === "llmPrompt") && sh === "out:text"));
   });
   const targetClass = `typed-handle typed-handle--text${invalidTextIn ? " typed-handle--invalid" : ""}`;
   const targetTitle = invalidTextIn ? "Wrong input type" : undefined;

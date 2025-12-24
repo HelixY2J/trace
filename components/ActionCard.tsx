@@ -5,7 +5,7 @@ type ActionCardProps = {
   label: string;
   disabled?: boolean;
   onClick?: () => void;
-  dragKind?: "text" | "image" | "llm";
+  dragKind?: "text" | "image" | "llm" | "llmPrompt";
   className?: string;
 };
 

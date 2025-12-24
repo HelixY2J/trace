@@ -22,6 +22,7 @@ import StyledEdge from "./edges/StyledEdge";
 import TextNode from "./nodes/TextNode";
 import ImageNode from "./nodes/ImageNode";
 import LLMNode from "./nodes/LLMNode";
+import LLMPromptNode from "./nodes/LLMPromptNode";
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { DEFAULT_WORKFLOW } from "../src/workflow/defaultWorkflow";
 
@@ -29,7 +30,7 @@ import { DEFAULT_WORKFLOW } from "../src/workflow/defaultWorkflow";
  * Full-viewport React Flow canvas.
  * Keeps nodes/edges local for now; provides grid, pan/zoom, minimap, controls.
  */
-export type NodeKind = "text" | "image" | "llm";
+export type NodeKind = "text" | "image" | "llm" | "llmPrompt";
 export type FlowCanvasHandle = {
   addNode: (kind: NodeKind, position?: { x: number; y: number }) => void;
   exportWorkflow: () => void;
@@ -42,6 +43,7 @@ function FlowCanvasInner(_props: unknown, ref: React.Ref<FlowCanvasHandle>) {
     text: TextNode as any,
     image: ImageNode as any,
     llm: LLMNode as any,
+    llmPrompt: LLMPromptNode as any,
   };
   const edgeTypes = { styled: StyledEdge as any };
   const rf = useReactFlow();
@@ -69,9 +71,10 @@ function FlowCanvasInner(_props: unknown, ref: React.Ref<FlowCanvasHandle>) {
       const allowedByTypeFallback =
         !!sourceType && !!targetType &&
         (
-          (sourceType === "text" && targetType === "llm") ||
-          (sourceType === "image" && targetType === "llm") ||
-          (sourceType === "llm" && targetType === "text")
+          (sourceType === "text" && (targetType === "llm" || targetType === "llmPrompt")) ||
+          (sourceType === "image" && (targetType === "llm" || targetType === "llmPrompt")) ||
+          (sourceType === "llm" && targetType === "text") ||
+          (sourceType === "llmPrompt" && targetType === "text")
         );
       const data = allowedByTypeFallback ? undefined : { invalid: true };
       return {
@@ -122,15 +125,23 @@ function FlowCanvasInner(_props: unknown, ref: React.Ref<FlowCanvasHandle>) {
     const sh = connection.sourceHandle || "";
     const th = connection.targetHandle || "";
     const handleAllowed =
-      (sh === "out:text" && th === "in:text" && (sourceType === "text" || sourceType === "llm") && (targetType === "llm" || targetType === "text")) ||
-      (sh === "out:image" && th === "in:image" && sourceType === "image" && targetType === "llm") ||
+      (sh === "out:text" && th === "in:text" && (
+        (sourceType === "text" && (targetType === "llm" || targetType === "llmPrompt")) ||
+        (sourceType === "llm" && targetType === "text") ||
+        (sourceType === "llmPrompt" && targetType === "text")
+      )) ||
+      (sh === "out:image" && th === "in:image" && (
+        (sourceType === "image" && (targetType === "llm" || targetType === "llmPrompt")) ||
+        (sourceType === "llm" && targetType === "llmPrompt")
+      )) ||
       false;
     const allowedByTypeFallback =
       !!sourceType && !!targetType &&
       (
-        (sourceType === "text" && targetType === "llm") ||
-        (sourceType === "image" && targetType === "llm") ||
-        (sourceType === "llm" && targetType === "text")
+        (sourceType === "text" && (targetType === "llm" || targetType === "llmPrompt")) ||
+        (sourceType === "image" && (targetType === "llm" || targetType === "llmPrompt")) ||
+        (sourceType === "llm" && targetType === "text") ||
+        (sourceType === "llmPrompt" && targetType === "text")
       );
     const isAllowed = sh || th ? handleAllowed : allowedByTypeFallback;
     const data = isAllowed ? undefined : { invalid: true };
@@ -268,8 +279,18 @@ function FlowCanvasInner(_props: unknown, ref: React.Ref<FlowCanvasHandle>) {
       type: "llm",
       data: { kind: "LLM", model: "Imagen 4" },
     };
+    const llmPromptNode: Node = {
+      id,
+      position: position ?? fallbackPos,
+      type: "llmPrompt",
+      data: { kind: "LLMPrompt", model: "Imagen 4" },
+    };
 
-    const newNode = kind === "text" ? textNode : kind === "image" ? imageNode : llmNode;
+    const newNode =
+      kind === "text" ? textNode :
+      kind === "image" ? imageNode :
+      kind === "llmPrompt" ? llmPromptNode :
+      llmNode;
 
     setNodes((prev) => [
       ...prev,
@@ -305,6 +326,12 @@ function FlowCanvasInner(_props: unknown, ref: React.Ref<FlowCanvasHandle>) {
       } else if (n.type === "llm") {
         base.data = {
           kind: "LLM",
+          model: typeof d.model === "string" ? d.model : "",
+          prompt: typeof d.prompt === "string" ? d.prompt : "",
+        };
+      } else if (n.type === "llmPrompt") {
+        base.data = {
+          kind: "LLMPrompt",
           model: typeof d.model === "string" ? d.model : "",
           prompt: typeof d.prompt === "string" ? d.prompt : "",
         };
@@ -355,6 +382,12 @@ function FlowCanvasInner(_props: unknown, ref: React.Ref<FlowCanvasHandle>) {
       } else if (n.type === "llm") {
         base.data = {
           kind: "LLM",
+          model: typeof d.model === "string" ? d.model : "",
+          prompt: typeof d.prompt === "string" ? d.prompt : "",
+        };
+      } else if (n.type === "llmPrompt") {
+        base.data = {
+          kind: "LLMPrompt",
           model: typeof d.model === "string" ? d.model : "",
           prompt: typeof d.prompt === "string" ? d.prompt : "",
         };
@@ -413,15 +446,23 @@ function FlowCanvasInner(_props: unknown, ref: React.Ref<FlowCanvasHandle>) {
         const sh = String(rest.sourceHandle ?? "");
         const th = String(rest.targetHandle ?? "");
         const handleAllowed =
-          (sh === "out:text" && th === "in:text" && (sourceType === "text" || sourceType === "llm") && (targetType === "llm" || targetType === "text")) ||
-          (sh === "out:image" && th === "in:image" && sourceType === "image" && targetType === "llm") ||
+          (sh === "out:text" && th === "in:text" && (
+            (sourceType === "text" && (targetType === "llm" || targetType === "llmPrompt")) ||
+            (sourceType === "llm" && targetType === "text") ||
+            (sourceType === "llmPrompt" && targetType === "text")
+          )) ||
+          (sh === "out:image" && th === "in:image" && (
+            (sourceType === "image" && (targetType === "llm" || targetType === "llmPrompt")) ||
+            (sourceType === "llm" && targetType === "llmPrompt")
+          )) ||
           false;
         const allowedByTypeFallback =
           !!sourceType && !!targetType &&
           (
-            (sourceType === "text" && targetType === "llm") ||
-            (sourceType === "image" && targetType === "llm") ||
-            (sourceType === "llm" && targetType === "text")
+            (sourceType === "text" && (targetType === "llm" || targetType === "llmPrompt")) ||
+            (sourceType === "image" && (targetType === "llm" || targetType === "llmPrompt")) ||
+            (sourceType === "llm" && targetType === "text") ||
+            (sourceType === "llmPrompt" && targetType === "text")
           );
         const isAllowed = sh || th ? handleAllowed : allowedByTypeFallback;
         const data = isAllowed ? undefined : { invalid: true };

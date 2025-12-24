@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { ArchiveX, Command, File, Send, Trash2, Search, History, Briefcase, ImagePlus, Video, Box, Sparkles, Images, CircleHelp, Type, Camera, Play, Download, FileUp, Save } from "lucide-react"
+import { ArchiveX, Command, Search, History, Briefcase, ImagePlus, Video, Box, Sparkles, Images, CircleHelp, Type, Camera, Play, Download, FileUp, Save } from "lucide-react"
 import Image from "next/image"
 import ActionCard from "./ActionCard"
 
@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/sidebar"
 
 
-type AddHandler = (kind: "text" | "image" | "llm") => void
+type AddHandler = (kind: "text" | "image" | "llm" | "llmPrompt") => void
 type ExportHandler = () => void
 type ImportHandler = (file: File) => void
 type SaveDbHandler = () => void
@@ -199,6 +199,7 @@ export function AppSidebar({ onAdd, onExport, onImport, onSaveDb, onLoadDb, ...p
                 <ActionCard icon={<Type className="size-5" />} label="Prompt" onClick={() => onAdd("text")} dragKind="text" />
                 <ActionCard icon={<Camera className="size-5" />} label="Image" onClick={() => onAdd("image")} dragKind="image" />
                 <ActionCard icon={<Play className="size-5" />} label="Imagen 4" onClick={() => onAdd("llm")} dragKind="llm" />
+                <ActionCard icon={<Sparkles className="size-5" />} label="Run LLM" onClick={() => onAdd("llmPrompt")} dragKind="llmPrompt" />
               </div>
             </SidebarGroup>
           )}
