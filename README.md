@@ -17,4 +17,6 @@ bun dev
 
 ![output1](public/res/deadpan.png)
 
-![output2](public/res/example.png)
+![output2](public/res/imagen.png)
+
+![output3](public/res/example.png)
